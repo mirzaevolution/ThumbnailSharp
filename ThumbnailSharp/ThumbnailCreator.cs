@@ -30,7 +30,7 @@ using System.IO;
 namespace ThumbnailSharp
 {
     /// <summary>
-    /// Image format to use when creating a thumbnail
+    /// Image format to use when creating a thumbnail.
     /// </summary>
     public enum Format
     {
