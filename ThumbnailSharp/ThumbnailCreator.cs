@@ -38,11 +38,8 @@ namespace ThumbnailSharp
         Bmp,
         Png,
         Gif,
-        Icon,
-        Tiff,
-        Exif,
-        Wmf,
-        Emf,
+        Tiff
+       
     }
     /// <summary>
     /// Thumbnail class that holds various methods to create an image thumbnail.
@@ -182,16 +179,9 @@ namespace ThumbnailSharp
                     return ImageFormat.Png;
                 case Format.Gif:
                     return ImageFormat.Gif;
-                case Format.Icon:
-                    return ImageFormat.Icon;
-                case Format.Tiff:
-                    return ImageFormat.Tiff;
-                case Format.Exif:
-                    return ImageFormat.Exif;
-                case Format.Wmf:
-                    return ImageFormat.Wmf;
                 default:
-                    return ImageFormat.Emf;
+                    return ImageFormat.Tiff;
+                
             }
         }
         /// <summary>
