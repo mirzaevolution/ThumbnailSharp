@@ -26,6 +26,8 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace ThumbnailSharp
 {
@@ -181,9 +183,39 @@ namespace ThumbnailSharp
                     return ImageFormat.Gif;
                 default:
                     return ImageFormat.Tiff;
-                
             }
         }
+        private async Task<Stream> GetImageStreamFromUrl(Uri urlAddress)
+        {
+            Stream result = null;
+            try
+            {
+                byte[] bytes = await GetImageBytesFromUrl(urlAddress);
+                result = new MemoryStream(bytes);
+            }
+            catch
+            {
+                result = null;
+            }
+            return result;
+        }
+        private async Task<byte[]> GetImageBytesFromUrl(Uri urlAddress)
+        {
+            byte[] buffer = null;
+            try
+            {
+                using (HttpClient client = new HttpClient())
+                {
+                    buffer = await client.GetByteArrayAsync(urlAddress);
+                }
+            }
+            catch
+            {
+                buffer = null;
+            }
+            return buffer;
+        }
+
         /// <summary>
         /// Create a thumbnail from file and returns as stream.
         /// </summary>
@@ -326,6 +358,53 @@ namespace ThumbnailSharp
             }
             return null;
         }
+
+
+        /// <summary>
+        /// Create a thumbnail from valid image url asynchronously.
+        /// </summary>
+        /// <param name="thumbnailSize">Thumbnail size. For portrait image, thumbnail size must be less than its height. 
+        /// For landscape image, thumbnail size must be less than its width. For the same size image (Proportional), thumbnail size must be less than its width and height.</param>
+        /// <param name="urlAddress">Valid absolute url address with proper scheme.</param>
+        /// <param name="imageFormat">Image format to use.</param>
+        /// <returns>A thumbnail image as stream. Returns null if it fails.</returns>
+        /// <exception cref="ArgumentNullException">'urlAddress' is null.</exception>
+        public async Task<Stream> CreateThumbnailStreamAsync(uint thumbnailSize, Uri urlAddress, Format imageFormat)
+        {
+            if (urlAddress == null)
+                throw new ArgumentNullException(nameof(urlAddress), "'urlAddress' cannot be null");
+            Stream result = null;
+            Stream stream = await GetImageStreamFromUrl(urlAddress);
+            if(stream!=null)
+            {
+                result = CreateThumbnailStream(thumbnailSize, stream, imageFormat);
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// Create a thumbnail from valid image url asynchronously.
+        /// </summary>
+        /// <param name="thumbnailSize">Thumbnail size. For portrait image, thumbnail size must be less than its height. 
+        /// For landscape image, thumbnail size must be less than its width. For the same size image (Proportional), thumbnail size must be less than its width and height.</param>
+        /// <param name="urlAddress">Valid absolute url address with proper scheme.</param>
+        /// <param name="imageFormat">Image format to use.</param>
+        /// <returns>A thumbnail image as bytes. Returns null if it fails.</returns>
+        /// <exception cref="ArgumentNullException">'urlAddress' is null.</exception>
+        public async Task<byte[]> CreateThumbnailBytesAsync(uint thumbnailSize, Uri urlAddress, Format imageFormat)
+        {
+            if (urlAddress == null)
+                throw new ArgumentNullException(nameof(urlAddress), "'urlAddress' cannot be null");
+            byte[] result = null;
+            byte[] imageBytes = await GetImageBytesFromUrl(urlAddress);
+            if(imageBytes!=null)
+            {
+                result = CreateThumbnailBytes(thumbnailSize, imageBytes, imageFormat);
+            }
+            return result;
+        }
+
+
 
     }
 }
