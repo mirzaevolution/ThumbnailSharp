@@ -98,7 +98,7 @@ Stream resultStream = new ThumbnailCreator().CreateThumbnailStream(
 );
 ```
 
-**Get thumbnail from image bytes
+**Get thumbnail from image bytes**
 
 ```csharp
 byte[] buffer = GetImageBytes(); //this is just fictitious method to get image data in bytes
