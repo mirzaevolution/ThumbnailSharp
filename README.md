@@ -55,14 +55,14 @@ Simple, you just need to pass thumbnail size (aspect ratio will be reserved), im
 ```csharp
 byte[] resultBytes = await new ThumbnailCreator().CreateThumbnailBytesAsync(
 	thumbnailSize: 250,
-    urlAddress: new Uri("http://www.sample-image.com/image.jpg",UriKind.Absolute),
-    imageFormat: Format.Jpeg
+    	urlAddress: new Uri("http://www.sample-image.com/image.jpg",UriKind.Absolute),
+    	imageFormat: Format.Jpeg
 );
 // or
 Stream resultStream = await new ThumbnailCreator().CreateThumbnailStreamAsync(
 	thumbnailSize: 250,
-    urlAddress: new Uri("http://www.sample-image.com/image.png",UriKind.Absolute),
-    imageFormat: Format.Png
+    	urlAddress: new Uri("http://www.sample-image.com/image.png",UriKind.Absolute),
+    	imageFormat: Format.Png
 );
 ```
 
@@ -71,14 +71,14 @@ Stream resultStream = await new ThumbnailCreator().CreateThumbnailStreamAsync(
 ```csharp
 byte[] resultBytes = new ThumbnailCreator().CreateThumbnailBytes(
 	thumbnailSize: 300,
-    imageFileLocation: @"C:\images\image.bmp",
-    imageFormat: Format.Bmp
+    	imageFileLocation: @"C:\images\image.bmp",
+    	imageFormat: Format.Bmp
 );
 //or
 Stream resultStream = new ThumbnailCreator().CreateThumbnailStream(
 	thumbnailSize: 300,
-    imageFileLocation: @"C:\images\image.bmp",
-    imageFormat: Format.Bmp
+    	imageFileLocation: @"C:\images\image.bmp",
+    	imageFormat: Format.Bmp
 );
 ```
 
@@ -87,14 +87,14 @@ Stream resultStream = new ThumbnailCreator().CreateThumbnailStream(
 ```csharp
 byte[] resultBytes = new ThumbnailCreator().CreateThumbnailBytes(
 	thumbnailSize: 300,
-    imageStream: new FileStream(@"C:\images\image.jpg",FileMode.Open,FileAccess.ReadWrite),
-    imageFormat: Format.Jpeg
+    	imageStream: new FileStream(@"C:\images\image.jpg",FileMode.Open,FileAccess.ReadWrite),
+    	imageFormat: Format.Jpeg
 );
 //or
 Stream resultStream = new ThumbnailCreator().CreateThumbnailStream(
 	thumbnailSize: 300,
   	imageStream: new FileStream(@"C:\images\image.jpg",FileMode.Open,FileAccess.ReadWrite),
-    imageFormat: Format.Jpeg
+    	imageFormat: Format.Jpeg
 );
 ```
 
@@ -105,14 +105,14 @@ byte[] buffer = GetImageBytes(); //this is just fictitious method to get image d
 
 byte[] resultBytes = new ThumbnailCreator().CreateThumbnailBytes(
 	thumbnailSize: 300,
-    imageBytes: buffer,
-    imageFormat: Format.Gif
+    	imageBytes: buffer,
+    	imageFormat: Format.Gif
 );
 //or
 Stream resultStream = new ThumbnailCreator().CreateThumbnailStream(
 	thumbnailSize: 300,
-    imageBytes: buffer,
-    imageFormat: Format.Tiff
+    	imageBytes: buffer,
+    	imageFormat: Format.Tiff
 );
 ```
 
