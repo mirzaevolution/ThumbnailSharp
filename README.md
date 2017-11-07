@@ -14,6 +14,10 @@ Here are some samples:
 ![landscape-image-thumbnail](https://raw.githubusercontent.com/mirzaevolution/ThumbnailSharp.Client/master/AllSamples/Samples/Local/landscape-thumbnail.jpg)
 
 
+*size is set to 450*
+
+![landscape-image-thumbnail](https://raw.githubusercontent.com/mirzaevolution/ThumbnailSharp.Client/master/AllSamples/Samples/Local/landscape-thumbnail-450.jpg)
+
 
 
 
@@ -27,6 +31,10 @@ Here are some samples:
 *size is set to 250*
 
 ![portrait-image-thumbnail](https://raw.githubusercontent.com/mirzaevolution/ThumbnailSharp.Client/master/AllSamples/Samples/Local/portrait-thumbnail.jpg)
+
+*size is set to 450*
+
+![portrait-image-thumbnail](https://raw.githubusercontent.com/mirzaevolution/ThumbnailSharp.Client/master/AllSamples/Samples/Local/portrait-thumbnail-450.jpg)
 
 
 
