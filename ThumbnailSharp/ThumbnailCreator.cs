@@ -29,6 +29,7 @@ using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
 
+
 namespace ThumbnailSharp
 {
     /// <summary>
@@ -41,15 +42,52 @@ namespace ThumbnailSharp
         Png,
         Gif,
         Tiff
-       
+
+    }
+    /// <summary>
+    /// make thumbnail force by ratio
+    /// </summary>
+    public enum Ratio
+    {
+
+        Landscape,
+        Portrait
     }
     /// <summary>
     /// Thumbnail class that holds various methods to create an image thumbnail.
     /// </summary>
     public class ThumbnailCreator
     {
+        Ratio? forceRatio = null;
+        public ThumbnailCreator() : this(null)
+        {
+        }
+        public ThumbnailCreator(Ratio? forceRatio)
+        {
+
+            this.forceRatio = forceRatio;
+        }
+
+        private Stream GetStreamFromFileLocation(string imageLocation)
+        {
+            if (!File.Exists(imageLocation))
+            {
+                throw new FileNotFoundException("fileNotFound:" + imageLocation);
+            }
+            return File.OpenRead(imageLocation);
+        }
+        Ratio GetRatio(Ratio? forceRatio, float actualWidth, float actualHeight)
+        {
+            if (forceRatio.HasValue)
+            {
+                return forceRatio.Value;
+            }
+            return actualWidth >= actualHeight ? Ratio.Landscape : Ratio.Portrait;
+
+        }
         private Bitmap CreateBitmapThumbnail(uint thumbnailSize, string imageFileLocation)
         {
+            return CreateBitmapThumbnail(thumbnailSize, GetStreamFromFileLocation(imageFileLocation));
             Bitmap bitmap = null;
             Image image = null;
             float actualHeight = default(float);
@@ -69,25 +107,28 @@ namespace ThumbnailSharp
             {
                 actualHeight = image.Height;
                 actualWidth = image.Width;
-                if (actualHeight > actualWidth)
+                if (forceRatio.Value == Ratio.Portrait || actualHeight > actualWidth)
                 {
                     if ((uint)actualHeight <= thumbnailSize)
-                        throw new Exception("Thumbnail size must be less than actual height (portrait image)");
+                        return (Bitmap)image;
+                    //throw new Exception("Thumbnail size must be less than actual height (portrait image)");
                     thumbnailHeight = thumbnailSize;
                     thumbnailWidth = (uint)((actualWidth / actualHeight) * thumbnailSize);
                 }
-                else if (actualWidth > actualHeight)
+                else if (forceRatio.Value == Ratio.Landscape && actualWidth > actualHeight)
                 {
 
                     if ((uint)actualWidth <= thumbnailSize)
-                        throw new Exception("Thumbnail size must be less than actual width (landscape image)");
+                        return (Bitmap)image;
+                    //throw new Exception("Thumbnail size must be less than actual width (landscape image)");
                     thumbnailWidth = thumbnailSize;
                     thumbnailHeight = (uint)((actualHeight / actualWidth) * thumbnailSize);
                 }
                 else
                 {
                     if ((uint)actualWidth <= thumbnailSize)
-                        throw new Exception("Thumbnail size must be less than image's size");
+                        return (Bitmap)image;
+                    //throw new Exception("Thumbnail size must be less than image's size");
                     thumbnailWidth = thumbnailSize;
                     thumbnailHeight = thumbnailSize;
                 }
@@ -112,7 +153,7 @@ namespace ThumbnailSharp
         private Bitmap CreateBitmapThumbnail(uint thumbnailSize, Stream imageStream)
         {
             Bitmap bitmap = null;
-            Image image = null;
+            System.Drawing.Image image = null;
             float actualHeight = default(float);
             float actualWidth = default(float);
             uint thumbnailHeight = default(uint);
@@ -130,25 +171,28 @@ namespace ThumbnailSharp
             {
                 actualHeight = image.Height;
                 actualWidth = image.Width;
-                if (actualHeight > actualWidth)
+                if (GetRatio(forceRatio,actualWidth, actualHeight)== Ratio.Portrait)
                 {
                     if ((uint)actualHeight <= thumbnailSize)
-                        throw new Exception("Thumbnail size must be less than actual height (portrait image)");
+                        return (Bitmap)image;
+                    //throw new Exception("Thumbnail size must be less than actual height (portrait image)");
                     thumbnailHeight = thumbnailSize;
                     thumbnailWidth = (uint)((actualWidth / actualHeight) * thumbnailSize);
                 }
-                else if (actualWidth > actualHeight)
+                else if (GetRatio(forceRatio, actualWidth, actualHeight) == Ratio.Landscape)
                 {
 
                     if ((uint)actualWidth <= thumbnailSize)
-                        throw new Exception("Thumbnail size must be less than actual width (landscape image)");
+                        return (Bitmap)image;
+                    //throw new Exception("Thumbnail size must be less than actual width (landscape image)");
                     thumbnailWidth = thumbnailSize;
                     thumbnailHeight = (uint)((actualHeight / actualWidth) * thumbnailSize);
                 }
                 else
                 {
                     if ((uint)actualWidth <= thumbnailSize)
-                        throw new Exception("Thumbnail size must be less than image's size");
+                        return (Bitmap)image;
+                    //throw new Exception("Thumbnail size must be less than image's size");
                     thumbnailWidth = thumbnailSize;
                     thumbnailHeight = thumbnailSize;
                 }
@@ -171,7 +215,7 @@ namespace ThumbnailSharp
         }
         private ImageFormat GetImageFormat(Format format)
         {
-            switch(format)
+            switch (format)
             {
                 case Format.Jpeg:
                     return ImageFormat.Jpeg;
@@ -326,7 +370,7 @@ namespace ThumbnailSharp
         {
             if (imageStream == null)
                 throw new ArgumentNullException(nameof(imageStream), "'imageStream' cannot be null");
-           
+
             Stream stream = CreateThumbnailStream(thumbnailSize, imageStream, imageFormat);
             if (stream != null)
             {
@@ -375,7 +419,7 @@ namespace ThumbnailSharp
                 throw new ArgumentNullException(nameof(urlAddress), "'urlAddress' cannot be null");
             Stream result = null;
             Stream stream = await GetImageStreamFromUrl(urlAddress);
-            if(stream!=null)
+            if (stream != null)
             {
                 result = CreateThumbnailStream(thumbnailSize, stream, imageFormat);
             }
@@ -397,7 +441,7 @@ namespace ThumbnailSharp
                 throw new ArgumentNullException(nameof(urlAddress), "'urlAddress' cannot be null");
             byte[] result = null;
             byte[] imageBytes = await GetImageBytesFromUrl(urlAddress);
-            if(imageBytes!=null)
+            if (imageBytes != null)
             {
                 result = CreateThumbnailBytes(thumbnailSize, imageBytes, imageFormat);
             }
